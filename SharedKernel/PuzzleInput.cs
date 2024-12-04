@@ -14,6 +14,11 @@ namespace SharedKernel
             get { return _lines; }
         }
 
+        public string FullText
+        {
+            get { return string.Join(System.Environment.NewLine, _lines); }
+        }
+
         public PuzzleInput(string filePath) : this(filePath, false) { }
 
         public PuzzleInput(string filePath, bool ignoreEmptyLines)
