@@ -10,7 +10,7 @@ Each day has its own console application. Start the corresponding project and sp
 otherwise any custom file. The console will prompt the result for each subtask. 
 
 ## Progression
-:star::x: [Day  1](/AdventOfCode2024/Day01) \
+:star::star: [Day  1](/AdventOfCode2024/Day01) \
 :x::x: [Day  2](/AdventOfCode2024/Day02) \
 :x::x: [Day  3](/AdventOfCode2024/Day03) \
 :x::x: [Day  4](/AdventOfCode2024/Day04) \
