@@ -14,6 +14,35 @@ namespace SharedKernel
             get { return _lines; }
         }
 
+        public List<List<string>> BlockLines
+        {
+            get { return getBlockLines(); }
+        }
+
+        private List<List<string>> getBlockLines()
+        {
+            List<List<string>> blocks = new List<List<string>>();
+            List<string> currentBlock = new List<string>();
+
+            blocks.Add(currentBlock);
+
+            foreach (string line in Lines) 
+            { 
+                if(line == "")
+                {
+                    currentBlock = new List<string>();
+                    blocks.Add(currentBlock);
+                }
+                else
+                {
+                    currentBlock.Add(line);
+                }
+                
+            }
+
+            return blocks;
+        }
+
         public string FullText
         {
             get { return string.Join(System.Environment.NewLine, _lines); }
