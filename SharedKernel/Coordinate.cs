@@ -53,6 +53,16 @@ namespace SharedKernel
             Move(toMove.X, toMove.Y);
         }
 
+        public bool IsInMatrix<T>(T[,] matrix)
+        {
+            bool result = this.X < matrix.GetLength(0);
+            result = result && (this.X >= 0);
+            result = result && (this.Y < matrix.GetLength(1));
+            result = result && (this.Y >= 0);
+
+            return result;
+        }
+
         public override bool Equals(object obj)
         {
             var coordinate = obj as Coordinate;
@@ -74,6 +84,10 @@ namespace SharedKernel
                 case SharedKernel.Move.DirectionType.Right: { xToAdd = 1; break; }
                 case SharedKernel.Move.DirectionType.Up: { yToAdd = -1; break; }
                 case SharedKernel.Move.DirectionType.Down: { yToAdd = 1; break; }
+                case SharedKernel.Move.DirectionType.UpLeft: { xToAdd = -1; yToAdd = -1; break; }
+                case SharedKernel.Move.DirectionType.UpRight: { xToAdd = 1; yToAdd = -1; break; }
+                case SharedKernel.Move.DirectionType.DownLeft: { xToAdd = -1; yToAdd = 1; break; }
+                case SharedKernel.Move.DirectionType.DownRight: { xToAdd = 1; yToAdd = 1; break; }
             }
 
             return new Coordinate(this.X + xToAdd, this.Y + yToAdd);
@@ -82,14 +96,10 @@ namespace SharedKernel
         public List<Coordinate> GetAdjacentCoordinates()
         {
             List<Coordinate> adjacent = new List<Coordinate>();
-            adjacent.Add(new Coordinate(this.X - 1, Y - 1));
-            adjacent.Add(new Coordinate(this.X, Y - 1));
-            adjacent.Add(new Coordinate(this.X + 1, Y - 1));
-            adjacent.Add(new Coordinate(this.X - 1, Y));
-            adjacent.Add(new Coordinate(this.X + 1, Y));
-            adjacent.Add(new Coordinate(this.X - 1, Y + 1));
-            adjacent.Add(new Coordinate(this.X, Y + 1));
-            adjacent.Add(new Coordinate(this.X + 1, Y + 1));
+            foreach(Move.DirectionType direction in Enum.GetValues(typeof(Move.DirectionType)))
+            {
+                adjacent.Add(GetAdjacentCoordinate(direction));
+            }
 
             return adjacent;
         }

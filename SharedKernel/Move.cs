@@ -9,7 +9,7 @@ namespace SharedKernel
 {
     public class Move
     {
-        public enum DirectionType { Left = 1, Right = 2, Up = 3, Down = 4 }
+        public enum DirectionType { Left = 1, Right = 2, Up = 3, Down = 4, UpLeft = 5, UpRight = 6, DownLeft = 7, DownRight = 8 }
         public Coordinate Coordinate { get; set; }
         public DirectionType Direction { get; set; }
         public Move(Coordinate coordinate, DirectionType direction)
@@ -35,23 +35,7 @@ namespace SharedKernel
 
         public Move MoveToDirection()
         {
-            if (Direction == DirectionType.Right)
-            {
-                return new Move(new Coordinate(Coordinate.X + 1, Coordinate.Y), Direction);
-            }
-            else if (Direction == DirectionType.Left)
-            {
-                return new Move(new Coordinate(Coordinate.X - 1, Coordinate.Y), Direction);
-            }
-            else if (Direction == DirectionType.Up)
-            {
-                return new Move(new Coordinate(Coordinate.X, Coordinate.Y - 1), Direction);
-            }
-            else if (Direction == DirectionType.Down)
-            {
-                return new Move(new Coordinate(Coordinate.X, Coordinate.Y + 1), Direction);
-            }
-            throw new NotImplementedException();
+           return new Move(Coordinate.GetAdjacentCoordinate(Direction), Direction);
         }
         
         public Move RotateLeft()
