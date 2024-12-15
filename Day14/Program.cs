@@ -1,4 +1,5 @@
 ﻿using SharedKernel;
+using SkiaSharp;
 using System.Text.RegularExpressions;
 
 namespace Day14
@@ -39,15 +40,76 @@ namespace Day14
             }
 
             Console.WriteLine("safety factor: {0}", getSafetyFactor(robots, spaceWide, spaceTall, 100));
+
+            Console.WriteLine("Print bitmaps? (y,n)");
+            Console.WriteLine("christmas tree: {0}", getSecondsForChristmasTree(robots, spaceWide, spaceTall, Console.Read() == 'y'));
+        }
+
+        private static int getSecondsForChristmasTree(List<Robot> robots, int spaceWide, int spaceTall, bool printBitmaps)
+        {
+            bool isChristmasTree = false;
+            int seconds = 0;
+            int middleIndexHorizontal = (int)Math.Floor((double)spaceWide / 2);
+
+            do
+            {
+                seconds++;
+                List<Coordinate> current = moveRobots(robots, spaceWide, spaceTall, seconds);
+
+                if (printBitmaps)
+                {
+                    var bmap = new SKBitmap(spaceWide, spaceTall, false);
+                    var canvas = new SKCanvas(bmap);
+                    canvas.Clear(SKColors.White);
+
+                    foreach (Coordinate c in current)
+                    {
+                        bmap.SetPixel((int)c.X, (int)c.Y, SKColors.Black);
+                    }
+
+                    using (var image = SKImage.FromBitmap(bmap))
+                    using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
+                    using (var stream = File.OpenWrite(DateTime.Now.ToString().Replace(":", "") + seconds.ToString().PadLeft(4, '0') + ".png"))
+                    {
+                        data.SaveTo(stream);
+                    }
+                }
+
+                if (current.Distinct().Count() == robots.Count)
+                {
+                    isChristmasTree = true;
+                }
+
+            }
+            while (!isChristmasTree);
+
+            return seconds;
         }
 
         private static int getSafetyFactor(List<Robot> robots, int spaceWide, int spaceTall, int seconds)
         {
-            List<int> quadrant = new List<int>{0, 0, 0, 0 };
-            int middleIndexHorizontal = (int) Math.Floor((double)spaceWide / 2);
-            int middleIndexVertical = (int)Math.Floor((double)spaceTall / 2); 
+            List<int> quadrant = new List<int> { 0, 0, 0, 0 };
+            int middleIndexHorizontal = (int)Math.Floor((double)spaceWide / 2);
+            int middleIndexVertical = (int)Math.Floor((double)spaceTall / 2);
 
-            foreach (Robot robot in robots) 
+            moveRobots(robots, spaceWide, spaceTall, seconds);
+
+            foreach (Coordinate position in moveRobots(robots, spaceWide, spaceTall, seconds))
+            {
+                if (position.X < middleIndexHorizontal && position.Y < middleIndexVertical) { quadrant[0]++; }
+                else if (position.X > middleIndexHorizontal && position.Y < middleIndexVertical) { quadrant[1]++; }
+                else if (position.X < middleIndexHorizontal && position.Y > middleIndexVertical) { quadrant[2]++; }
+                else if (position.X > middleIndexHorizontal && position.Y > middleIndexVertical) { quadrant[3]++; }
+            }
+
+            return quadrant.Aggregate(1, (x, y) => x * y);
+        }
+
+        private static List<Coordinate> moveRobots(List<Robot> robots, int spaceWide, int spaceTall, int seconds)
+        {
+            List<Coordinate> movedRobots = new List<Coordinate>();
+
+            foreach (Robot robot in robots)
             {
                 Int64 newX = robot.Position.X + (seconds * robot.Vector.X);
                 Int64 newY = robot.Position.Y + (seconds * robot.Vector.Y);
@@ -55,16 +117,10 @@ namespace Day14
                 newX = nfmod(newX, spaceWide);
                 newY = nfmod(newY, spaceTall);
 
-                Coordinate newPosition = new Coordinate(newX, newY);
-
-                if (newPosition.X < middleIndexHorizontal  && newPosition.Y < middleIndexVertical) { quadrant[0]++; }
-                else if (newPosition.X > middleIndexHorizontal && newPosition.Y < middleIndexVertical) { quadrant[1]++; }
-                else if (newPosition.X < middleIndexHorizontal && newPosition.Y > middleIndexVertical) { quadrant[2]++; }
-                else if (newPosition.X > middleIndexHorizontal && newPosition.Y > middleIndexVertical) { quadrant[3]++; }
-                
+                movedRobots.Add(new Coordinate(newX, newY));
             }
 
-            return quadrant.Aggregate(1, (x, y) => x * y);
+            return movedRobots;
         }
 
         private static Int64 nfmod(float a, float b)
