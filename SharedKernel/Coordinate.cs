@@ -95,11 +95,37 @@ namespace SharedKernel
 
         public List<Coordinate> GetAdjacentCoordinates()
         {
+            List<Move.DirectionType> directions =  new List<Move.DirectionType>();
+            foreach (Move.DirectionType direction in Enum.GetValues(typeof(Move.DirectionType)))
+            {
+                directions.Add(direction);
+            }
+
+           List<Coordinate> adjacent = GetAdjacentCoordinates(directions);
+
+            return adjacent;
+        }
+
+        public List<Coordinate> GetAdjacentCoordinates(List<Move.DirectionType> directions)
+        {
             List<Coordinate> adjacent = new List<Coordinate>();
-            foreach(Move.DirectionType direction in Enum.GetValues(typeof(Move.DirectionType)))
+            foreach (Move.DirectionType direction in directions)
             {
                 adjacent.Add(GetAdjacentCoordinate(direction));
             }
+
+            return adjacent;
+        }
+
+        public List<Coordinate> GetAdjacentCoordinatesCardinalPoints()
+        {
+            List<Move.DirectionType> directions = new List<Move.DirectionType>();
+            directions.Add(SharedKernel.Move.DirectionType.Left);
+            directions.Add(SharedKernel.Move.DirectionType.Right);
+            directions.Add(SharedKernel.Move.DirectionType.Down);
+            directions.Add(SharedKernel.Move.DirectionType.Up);
+
+            List<Coordinate> adjacent = GetAdjacentCoordinates(directions);
 
             return adjacent;
         }
