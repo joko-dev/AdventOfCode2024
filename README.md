@@ -22,7 +22,7 @@ otherwise any custom file. The console will prompt the result for each subtask.
 :star::star: [Day 10](/AdventOfCode2024/Day10) \
 :star::star: [Day 11](/AdventOfCode2024/Day11) - Memoization, Cache \
 :star::star: [Day 12](/AdventOfCode2024/Day12) \
-:x::x: [Day 13](/AdventOfCode2024/Day13) \
+:star::star: [Day 13](/AdventOfCode2024/Day13) - Cramer's rule \
 :x::x: [Day 14](/AdventOfCode2024/Day14) \
 :x::x: [Day 15](/AdventOfCode2024/Day15) \
 :x::x: [Day 16](/AdventOfCode2024/Day16) \

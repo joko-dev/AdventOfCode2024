@@ -10,39 +10,51 @@ namespace Day13
             Console.WriteLine("Machine behavior: ");
             PuzzleInput puzzleInput = new(PuzzleOutputFormatter.getPuzzleFilePath(), true);
 
-            List<List<(int, int)>> machines = getMachines(puzzleInput.Lines);
-            Console.WriteLine("Token count: {0}", getTokenCount(machines));
+            List<List<(Int64, Int64)>> machines = getMachines(puzzleInput.Lines);
+            Console.WriteLine("Token count: {0}", getTokenCount(machines, 100, 0));
+            Console.WriteLine("Token count: {0}", getTokenCount(machines, 0, 10000000000000));
         }
 
-        private static int getTokenCount(List<List<(int, int)>> machines)
+        private static Int64 getTokenCount(List<List<(Int64, Int64)>> machines, int maxPresses, Int64 toAdd)
         {
-            int tokens = 0;
+            Int64 tokens = 0;
 
             foreach (var machine in machines)
             {
-                for (int a = 0; a < 100; a++)
+                (Int64, Int64) prize = machine[2];
+                prize.Item1 += toAdd;
+                prize.Item2 += toAdd;
+
+                Int64 determinante = (machine[0].Item1 * machine[1].Item2) - (machine[0].Item2 * machine[1].Item1);
+                Int64 determinanteA = (prize.Item1 * machine[1].Item2) - (prize.Item2 * machine[1].Item1);
+                Int64 determinanteB = (machine[0].Item1 * prize.Item2) - (machine[0].Item2 * prize.Item1);
+
+                if(!(determinante == 0 && determinanteA == 0 && determinanteB == 0) && !(determinante == 0 && determinanteA != 0 && determinanteB != 0))
                 {
-                    for(int b = 0; b < 100; b++)
+                    if (determinanteA % determinante == 0 && determinanteB % determinante == 0)
                     {
-                        if( (a * machine[0].Item1 + b * machine[1].Item1 == machine[2].Item1)
-                            && (a * machine[0].Item2 + b * machine[1].Item2 == machine[2].Item2))
+                        Int64 a = determinanteA / determinante;
+                        Int64 b = determinanteB / determinante;
+
+                        if (!(maxPresses > 0) || (a <= maxPresses && b <= maxPresses))
                         {
-                            tokens += 3 * a + b;
+                            tokens += a * 3 + b;
                         }
                     }
                 }
+                               
             }
 
             return tokens;
         }
 
-        private static List<List<(int, int)>> getMachines(List<string> lines)
+        private static List<List<(Int64, Int64)>> getMachines(List<string> lines)
         {
-            List<List<(int, int)>> machines = new List<List<(int, int)>>();
+            List<List<(Int64, Int64)>> machines = new List<List<(Int64, Int64)>>();
 
             for (int i = 0; i < lines.Count; i= i + 3)
             { 
-                List<(int,int)> machine = new List<(int, int)>();
+                List<(Int64, Int64)> machine = new List<(Int64, Int64)>();
 
                 string[] buttonA = lines[i].Replace("Button A:", "").Replace("X+", "").Replace("Y+", "").Split(",");
                 string[] buttonB = lines[i + 1].Replace("Button B:", "").Replace("X+", "").Replace("Y+", "").Split(",");
