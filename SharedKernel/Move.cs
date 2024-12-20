@@ -10,6 +10,14 @@ namespace SharedKernel
     public class Move
     {
         public enum DirectionType { Left = 1, Right = 2, Up = 3, Down = 4, UpLeft = 5, UpRight = 6, DownLeft = 7, DownRight = 8 }
+        public static DirectionType CreateDirectionFromChar(char direction)
+        {
+            if(direction == '^') { return DirectionType.Up; }
+            else if(direction == '<') { return DirectionType.Left; }
+            else if(direction == '>') { return DirectionType.Right; }
+            else if(direction == 'v') { return DirectionType.Down; }
+            else { throw new ArgumentOutOfRangeException(); }
+        }
         public Coordinate Coordinate { get; set; }
         public DirectionType Direction { get; set; }
         public Move(Coordinate coordinate, DirectionType direction)

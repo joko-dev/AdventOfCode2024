@@ -52,6 +52,13 @@ namespace SharedKernel
         {
             Move(toMove.X, toMove.Y);
         }
+        public void Move(Move.DirectionType direction)
+        {
+            Coordinate temp = GetAdjacentCoordinate(direction);
+            this.X = temp.X;
+            this.Y = temp.Y;
+        }
+
 
         public bool IsInMatrix<T>(T[,] matrix)
         {

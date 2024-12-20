@@ -97,6 +97,38 @@ namespace SharedKernel
             }
         }
 
+        public static Coordinate findValueInMatrix<T>(T[,] matrix, T value)
+        {
+            for(int y = 0; y < matrix.GetLength(1); y++)
+            {
+                for(int x = 0; x < matrix.GetLength(0); x++)
+                {
+                    if (matrix[x,y].Equals(value))
+                    {
+                        return new Coordinate(x,y);
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static List<Coordinate> getCoordinatesForValueInMatrix<T>(T[,] matrix, T value)
+        {
+            List<Coordinate> coordinates = new List<Coordinate>();
+
+            for (int y = 0; y < matrix.GetLength(1); y++)
+            {
+                for (int x = 0; x < matrix.GetLength(0); x++)
+                {
+                    if (matrix[x, y].Equals(value))
+                    {
+                        coordinates.Add(new Coordinate(x, y));
+                    }
+                }
+            }
+            return coordinates;
+        }
+
         public static int[,] getInputCoordinateAsMatrix(List<string> lines, int coordinateValue, string separator)
         {
             List<(int x, int y)> coordinates = new List<(int x, int y)>();

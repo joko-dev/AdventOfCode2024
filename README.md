@@ -24,7 +24,7 @@ otherwise any custom file. The console will prompt the result for each subtask.
 :star::star: [Day 12](/AdventOfCode2024/Day12) \
 :star::star: [Day 13](/AdventOfCode2024/Day13) - Cramer's rule \
 :star::star: [Day 14](/AdventOfCode2024/Day14) - Second part with bitmap-generation for visual check \
-:x::x: [Day 15](/AdventOfCode2024/Day15) \
+:star::x: [Day 15](/AdventOfCode2024/Day15) \
 :x::x: [Day 16](/AdventOfCode2024/Day16) \
 :x::x: [Day 17](/AdventOfCode2024/Day17) \
 :x::x: [Day 18](/AdventOfCode2024/Day18) \
