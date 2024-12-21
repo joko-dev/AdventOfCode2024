@@ -154,6 +154,11 @@ namespace SharedKernel
         {
             return HashCode.Combine(X, Y);
         }
+
+        public override string ToString()
+        {
+            return $"X: {this.X}, Y: {this.Y}";
+        }
     }
 }
 

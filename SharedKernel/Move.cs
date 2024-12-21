@@ -72,5 +72,10 @@ namespace SharedKernel
             }
             return new Move(Coordinate, rotatedDirection);
         }
+
+        public override string ToString()
+        {
+            return Coordinate.ToString() + ": " + Direction;
+        }
     }
 }
