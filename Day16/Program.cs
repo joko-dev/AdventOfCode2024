@@ -12,14 +12,26 @@ namespace Day16
             public Move From { get; private set; }
             public Move To { get; private set; }
 
-            public int Cost { get; private set; }
+            public int Cost { get { return getCost(); } }
+
+            public int BackwardCost { get { return getBackwardCost(); } }
+
+            private int getCost()
+            {
+                if (this.From.Direction == this.To.Direction) { return 1; }
+                else { return 1000; }
+            }
+
+            private int getBackwardCost()
+            {
+                if(Cost == 1000) { return 1000; }
+                else { return 4001; }
+            }
 
             public Edge(Move from, Move to)
             {
                 this.From = from;
                 this.To = to;
-                if (this.From.Direction == this.To.Direction) { Cost = 1; }
-                else { Cost = 1000; }
             }
 
             public override bool Equals(object obj)
@@ -86,9 +98,11 @@ namespace Day16
                 {
                     if (distance[knot] < minValue)
                     {
+                        minValue = distance[knot];
                         current = knot;
                     } 
                 }
+
                 knots.Remove(current);
 
                 foreach (Edge edge in edges.Where( e => e.From == current))
@@ -103,11 +117,6 @@ namespace Day16
                         }
                     }
                 }
-            }
-
-            foreach(Move move in distance.Keys.OrderBy( k => k.Coordinate.X*1000 + k.Coordinate.Y))
-            {
-                Console.WriteLine(move.ToString() + ": " + distance[move]);
             }
 
             return distance.Where( d => endPoints.Contains(d.Key)).Min( d=> d.Value);
