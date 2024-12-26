@@ -10,7 +10,8 @@ namespace Day20
             Console.WriteLine("racetrack: ");
             PuzzleInput puzzleInput = new(PuzzleOutputFormatter.getPuzzleFilePath(), false);
 
-            Console.WriteLine("Cheats saving at least 100 picoseconds: {0}", getCheatCount(getRaceTrack(PuzzleConverter.getInputAsMatrixChar(puzzleInput.Lines, null)), 2));
+            Console.WriteLine("2second-Cheats saving at least 100 picoseconds: {0}", getCheatCount(getRaceTrack(PuzzleConverter.getInputAsMatrixChar(puzzleInput.Lines, null)), 2));
+            Console.WriteLine("20second-Cheats saving at least 100 picoseconds: {0}", getCheatCount(getRaceTrack(PuzzleConverter.getInputAsMatrixChar(puzzleInput.Lines, null)), 20));
         }
 
         private static int getCheatCount(List<Coordinate> track, int cheatSeconds)
@@ -20,14 +21,17 @@ namespace Day20
             for (int i = 0; i < track.Count; i++)
             {
                 Coordinate currentPosition = track[i];
-                foreach (Coordinate adjacent in currentPosition.GetAdjacentCoordinatesCardinalPoints())
+
+                Dictionary<Coordinate, Int64> reachable = currentPosition.GetReachableCoordinates(cheatSeconds);
+
+                foreach(Coordinate possibleShortcut in reachable.Keys)
                 {
-                    foreach (Coordinate possibleShortcut in adjacent.GetAdjacentCoordinatesCardinalPoints())
+                    if(possibleShortcut.X >= 0 && possibleShortcut.Y >= 0)
                     {
-                        int positionPossibleShortcut = track.FindIndex( t => t.Equals(possibleShortcut ));
-                        if (!possibleShortcut.Equals(currentPosition) && positionPossibleShortcut > -1)
+                        int positionPossibleShortcut = track.FindIndex(t => t.Equals(possibleShortcut));
+                        if (positionPossibleShortcut > -1)
                         {
-                            if (positionPossibleShortcut - i - cheatSeconds >= 100)
+                            if (positionPossibleShortcut - i - reachable[possibleShortcut] >= 100)
                             {
                                 cheatCount++;
                             }

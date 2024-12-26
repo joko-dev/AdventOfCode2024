@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -135,6 +136,25 @@ namespace SharedKernel
             List<Coordinate> adjacent = GetAdjacentCoordinates(directions);
 
             return adjacent;
+        }
+
+        public Dictionary<Coordinate, Int64> GetReachableCoordinates(Int64 distance)
+        {
+            Dictionary<Coordinate, Int64> reachable = new Dictionary<Coordinate,Int64>();
+
+            for (Int64 x = this.X - distance; x <= this.X + distance; x++)
+            {
+                for (Int64 y = this.Y - distance; y <= this.Y + distance; y++)
+                {
+                    Int64 currentDistance = Math.Abs(x - this.X) + Math.Abs(y - this.Y);
+                    if ( currentDistance <= distance && currentDistance != 0)
+                    {
+                        reachable.Add(new Coordinate(x, y), currentDistance);
+                    }
+                }
+            }
+            return reachable;
+
         }
 
         public Int64 X { get; private set; }
