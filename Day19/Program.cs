@@ -1,9 +1,11 @@
 ﻿using SharedKernel;
+using System.Net.Http.Headers;
 
 namespace Day19
 {
     internal class Program
     {
+        static internal Dictionary<(string, string), Int64> cache = new Dictionary<(string, string), Int64>();
         static void Main(string[] args)
         {
             Console.WriteLine(PuzzleOutputFormatter.getPuzzleCaption("Day 19: Linen Layout"));
@@ -13,13 +15,14 @@ namespace Day19
             List<string> towels = puzzleInput.BlockLines[0][0].Split(',').Select(x => x.Trim()).ToList();
             List<string> designs = puzzleInput.BlockLines[1];
 
-            int possible = 0;
+            Int64 possible = 0;
             foreach (string design in designs)
             {
                 if (isDesignPossible(towels, design, false) > 0) { possible++; }
             }
             Console.WriteLine("Designs possible: {0}", possible);
 
+            cache.Clear();
             possible = 0;
             foreach (string design in designs)
             {
@@ -28,19 +31,32 @@ namespace Day19
             Console.WriteLine("Unique combinations: {0}", possible);
         }
 
-        private static int isDesignPossible(List<string> towels, string design, bool uniqueDesign)
+        private static Int64 isDesignPossible(List<string> towels, string design, bool uniqueDesign)
         {
-            int possible = 0;
+            Int64 possible = 0;
 
             foreach (string towel in towels)
             {
                 if (design.StartsWith(towel))
                 {
-                    string leftOverDesign = design.Substring(towel.Length);
-                    if (leftOverDesign == "") { possible += 1; }
-                    else 
-                    {   if (uniqueDesign || possible == 0) { possible += isDesignPossible(towels, leftOverDesign, uniqueDesign); }
+                    Int64 addPossible = 0;
+                    if(cache.ContainsKey((design, towel)))
+                    {
+                        addPossible = cache[(design, towel)];
                     }
+                    else
+                    {
+                        string leftOverDesign = design.Substring(towel.Length);
+                        if (leftOverDesign == "") { addPossible = 1; }
+                        else
+                        {
+                            if (uniqueDesign || possible == 0) { addPossible += isDesignPossible(towels, leftOverDesign, uniqueDesign); }
+                        }
+
+                        cache[(design, towel)] = addPossible;
+                    }
+                    
+                    possible += addPossible;
                 }
             }
 
