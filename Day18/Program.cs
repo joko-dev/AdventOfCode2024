@@ -8,7 +8,7 @@ namespace Day18
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(PuzzleOutputFormatter.getPuzzleCaption("Day 17: Chronospatial Computer"));
+            Console.WriteLine(PuzzleOutputFormatter.getPuzzleCaption("Day 18: RAM Run"));
             Console.WriteLine("Incoming bytes: ");
             PuzzleInput puzzleInput = new(PuzzleOutputFormatter.getPuzzleFilePath(), false);
 
