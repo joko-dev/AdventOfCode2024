@@ -1,5 +1,6 @@
 ﻿using SharedKernel;
 using System.ComponentModel;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace Day16
@@ -14,18 +15,10 @@ namespace Day16
 
             public int Cost { get { return getCost(); } }
 
-            public int BackwardCost { get { return getBackwardCost(); } }
-
             private int getCost()
             {
                 if (this.From.Direction == this.To.Direction) { return 1; }
                 else { return 1000; }
-            }
-
-            private int getBackwardCost()
-            {
-                if(Cost == 1000) { return 1000; }
-                else { return 4001; }
             }
 
             public Edge(Move from, Move to)
@@ -61,10 +54,11 @@ namespace Day16
             Console.WriteLine("Map: ");
             PuzzleInput puzzleInput = new(PuzzleOutputFormatter.getPuzzleFilePath(), false);
 
-            Console.WriteLine("Lowest score: {0}", getLowestScore(PuzzleConverter.getInputAsMatrixChar(puzzleInput.Lines, null)));
+            (int Score, int TileCount) result = getLowestScore(PuzzleConverter.getInputAsMatrixChar(puzzleInput.Lines, null));
+            Console.WriteLine("Lowest score: {0}, TileCount: {1}", result.Score, result.TileCount);
         }
 
-        private static int getLowestScore(char[,] map)
+        private static(int Score, int TileCount) getLowestScore(char[,] map)
         {
             // Init
             Coordinate startCoordinate = PuzzleConverter.getCoordinatesForValueInMatrix(map, 'S').First();
@@ -74,13 +68,13 @@ namespace Day16
 
             Move start = knots.Find( k => k.Coordinate == startCoordinate && k.Direction == Move.DirectionType.Right);
 
-            foreach(Edge edge in edges.Where( k => k.To.Coordinate.X == 2 && k.To.Coordinate.Y == 1 && k.To.Direction == Move.DirectionType.Right))
-            {
-                Console.WriteLine(edge.ToString());
-            }
-
             Dictionary<Move, int> distance = new Dictionary<Move, int>();
             Dictionary<Move, Move> previous = new Dictionary<Move, Move>();
+            Dictionary<Move, List<Move>> shortestPathsPredecessors = new Dictionary<Move, List<Move>>();
+            foreach (Move knot in knots)
+            {
+                shortestPathsPredecessors[knot] = new List<Move>();
+            }
 
             // Djikstra
             foreach (Move knot in knots)
@@ -110,16 +104,46 @@ namespace Day16
                     if (knots.Contains(edge.To))
                     {
                         int alternative = distance[current] + edge.Cost;
-                        if (alternative < distance[edge.To])
+
+                        if (alternative <= distance[edge.To])
                         {
-                            distance[edge.To] = alternative;
-                            previous[edge.To] = current;
+                            if (alternative < distance[edge.To])
+                            {
+                                shortestPathsPredecessors[edge.To].Clear();
+                                distance[edge.To] = alternative;
+                                previous[edge.To] = current;
+                            }
+                            shortestPathsPredecessors[edge.To].Add(current);
                         }
                     }
                 }
             }
 
-            return distance.Where( d => endPoints.Contains(d.Key)).Min( d=> d.Value);
+            int minDistance = distance.Where(d => endPoints.Contains(d.Key)).Min(d => d.Value);
+            List<Coordinate> minPathCoordinates = new List<Coordinate>();
+            foreach(Move point in endPoints)
+            {
+                if (distance[point] == minDistance)
+                {
+                    fillMinPathCoordinates(point, minPathCoordinates, shortestPathsPredecessors);
+                }
+                
+            }
+
+            return (minDistance, minPathCoordinates.Count);
+        }
+
+        private static void fillMinPathCoordinates(Move move, List<Coordinate> minPathCoordinates, Dictionary<Move, List<Move>> shortestPathsPredecessors)
+        {
+            if (!minPathCoordinates.Contains(move.Coordinate))
+            {
+                minPathCoordinates.Add(move.Coordinate);
+            }
+
+            foreach(Move predecessor in shortestPathsPredecessors[move])
+            {
+                fillMinPathCoordinates(predecessor, minPathCoordinates, shortestPathsPredecessors);
+            }
         }
 
         private static void getKnotsEdges(char[,] map, Coordinate start, Coordinate end, out List<Move> knots, out List<Edge> edges)
